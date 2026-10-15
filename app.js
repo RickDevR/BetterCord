@@ -41,6 +41,8 @@ const logoutMenuBtn = document.getElementById('logout-menu-btn');
 const chatInput = document.getElementById('chat-input');
 const sendMsgBtn = document.getElementById('send-msg-btn');
 const messagesContainer = document.getElementById('messages-container');
+const headerChannelName = document.getElementById('header-channel-name');
+const headerIcon = document.getElementById('header-icon');
 
 const startCallBtn = document.getElementById('start-call-btn');
 const callModal = document.getElementById('call-modal');
@@ -60,7 +62,8 @@ const avatarFileInput = document.getElementById('avatar-file-input');
 const friendsModal = document.getElementById('friends-modal');
 const closeFriendsModal = document.getElementById('close-friends-modal');
 const friendsBodyContent = document.getElementById('friends-body-content');
-const friendsNavBtn = document.querySelector('[data-tab="friends"]');
+const friendsTabBtn = document.getElementById('friends-tab-btn');
+const homeNavBtn = document.getElementById('home-nav-btn');
 const addAccountBtn = document.getElementById('add-account-btn');
 const multiAccountsList = document.getElementById('multi-accounts-list');
 
@@ -70,8 +73,49 @@ let currentChannelId = 'general';
 let localStream = null;
 let unsubMessages = null;
 
+// Realistic Web Audio API Sound Effects (No external assets required)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'call') {
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(554.37, now + 0.15);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+    } else if (type === 'click') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+    } else if (type === 'success') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.1);
+        osc.frequency.setValueAtTime(783.99, now + 0.2);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+    }
+}
+
 // Password Eye Toggle
 togglePasswordBtn.addEventListener('click', () => {
+    playSound('click');
     if (authPassword.type === 'password') {
         authPassword.type = 'text';
         togglePasswordBtn.classList.remove('fa-eye');
@@ -86,6 +130,7 @@ togglePasswordBtn.addEventListener('click', () => {
 // Auth Mode Switching
 authSwitchBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    playSound('click');
     isSignUp = !isSignUp;
     if (isSignUp) {
         authSubmitBtn.textContent = 'Sign Up';
@@ -101,6 +146,7 @@ authSwitchBtn.addEventListener('click', (e) => {
 // Authentication Form Submit
 authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    playSound('click');
     authError.classList.add('hidden');
     const email = authEmail.value;
     const username = authUsername.value;
@@ -128,6 +174,7 @@ authForm.addEventListener('submit', async (e) => {
                 saveAccountLocally(userDoc.data());
             }
         }
+        playSound('success');
     } catch (err) {
         authError.textContent = err.message;
         authError.classList.remove('hidden');
@@ -153,6 +200,7 @@ function renderMultiAccounts() {
         img.className = 'account-switch-avatar';
         img.title = `Switch to ${acc.username}`;
         img.addEventListener('click', () => {
+            playSound('click');
             alert(`Switched account context to ${acc.username}. Please re-authenticate if auth session differs.`);
         });
         multiAccountsList.appendChild(img);
@@ -160,6 +208,7 @@ function renderMultiAccounts() {
 }
 
 addAccountBtn.addEventListener('click', async () => {
+    playSound('click');
     await signOut(auth);
     authEmail.value = '';
     authUsername.value = '';
@@ -212,6 +261,33 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// Channel & Navigation switching with Device Adaptation
+document.querySelectorAll('.channel-item[data-channel-id]').forEach(item => {
+    item.addEventListener('click', (e) => {
+        playSound('click');
+        document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentChannelId = item.getAttribute('data-channel-id');
+        headerChannelName.textContent = currentChannelId;
+        headerIcon.className = "fa-solid fa-hashtag";
+        loadMessages(currentChannelId);
+    });
+});
+
+friendsTabBtn.addEventListener('click', () => {
+    playSound('click');
+    document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
+    friendsTabBtn.classList.add('active');
+    friendsModal.classList.remove('hidden');
+    renderFriendsView('all');
+});
+
+homeNavBtn.addEventListener('click', () => {
+    playSound('click');
+    friendsModal.classList.remove('hidden');
+    renderFriendsView('all');
+});
+
 // Send Message
 sendMsgBtn.addEventListener('click', sendMessage);
 chatInput.addEventListener('keypress', (e) => {
@@ -222,6 +298,7 @@ async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text || !currentUser) return;
 
+    playSound('click');
     const cachedUser = JSON.parse(localStorage.getItem('bettercord_user') || '{}');
     chatInput.value = '';
 
@@ -266,9 +343,9 @@ function loadMessages(channelId) {
                         <div class="message-text" id="msg-text-${msgId}">${escapeHtml(msg.text)}</div>
                     </div>
                     <div class="message-actions-hover">
-                        <button title="Copy Text" onclick="navigator.clipboard.writeText('${msg.text.replace(/'/g, "\\\\'")}')"><i class="fa-solid fa-copy"></i></button>
-                        ${isOwner ? `<button title="Edit Message" onclick="window.editMessage('${msgId}', '${msg.text.replace(/'/g, "\\\\'")}')"><i class="fa-solid fa-pen"></i></button>` : ''}
-                        ${isOwner ? `<button title="Delete Message" onclick="window.deleteMessage('${msgId}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        <button title="Copy Text" class="action-copy" data-text="${escapeHtml(msg.text)}"><i class="fa-solid fa-copy"></i></button>
+                        ${isOwner ? `<button title="Edit Message" class="action-edit" data-id="${msgId}" data-text="${escapeHtml(msg.text)}"><i class="fa-solid fa-pen"></i></button>` : ''}
+                        ${isOwner ? `<button title="Delete Message" class="action-delete" data-id="${msgId}"><i class="fa-solid fa-trash"></i></button>` : ''}
                     </div>
                 `;
                 messagesContainer.appendChild(msgEl);
@@ -278,53 +355,88 @@ function loadMessages(channelId) {
     });
 }
 
-// Global Message Actions
-window.deleteMessage = async (msgId) => {
-    if (confirm("Delete this message?")) {
-        try {
-            await deleteDoc(doc(db, "messages", msgId));
-        } catch (err) {
-            console.error("Error deleting message:", err);
+// Event Delegation for Message Actions
+messagesContainer.addEventListener('click', async (e) => {
+    const copyBtn = e.target.closest('.action-copy');
+    const editBtn = e.target.closest('.action-edit');
+    const deleteBtn = e.target.closest('.action-delete');
+
+    if (copyBtn) {
+        playSound('click');
+        const textToCopy = copyBtn.getAttribute('data-text');
+        navigator.clipboard.writeText(textToCopy);
+        alert("Message copied to clipboard!");
+    }
+
+    if (editBtn) {
+        playSound('click');
+        const msgId = editBtn.getAttribute('data-id');
+        const oldText = editBtn.getAttribute('data-text');
+        const newText = prompt("Edit message:", oldText);
+        if (newText !== null && newText.trim() !== "") {
+            try {
+                await updateDoc(doc(db, "messages", msgId), { text: newText.trim() });
+                playSound('success');
+            } catch (err) {
+                console.error("Error editing message:", err);
+            }
         }
     }
-};
 
-window.editMessage = async (msgId, oldText) => {
-    const newText = prompt("Edit message:", oldText);
-    if (newText !== null && newText.trim() !== "") {
-        try {
-            await updateDoc(doc(db, "messages", msgId), { text: newText.trim() });
-        } catch (err) {
-            console.error("Error editing message:", err);
+    if (deleteBtn) {
+        playSound('click');
+        const msgId = deleteBtn.getAttribute('data-id');
+        if (confirm("Delete this message?")) {
+            try {
+                await deleteDoc(doc(db, "messages", msgId));
+                playSound('success');
+            } catch (err) {
+                console.error("Error deleting message:", err);
+            }
         }
     }
-};
-
-// Friends Modal & Requests
-friendsNavBtn.addEventListener('click', () => {
-    friendsModal.classList.remove('hidden');
-    renderFriendsView('all');
 });
 
-closeFriendsModal.addEventListener('click', () => friendsModal.classList.add('hidden'));
+// Friends Modal & Custom Channel Creation
+closeFriendsModal.addEventListener('click', () => {
+    playSound('click');
+    friendsModal.classList.add('hidden');
+});
 
 function renderFriendsView(viewType) {
     friendsBodyContent.innerHTML = '';
     if (viewType === 'all') {
-        friendsBodyContent.innerHTML = `<p style="color: #94a3b8;">Your friends list is active. Search users by username to send friend requests.</p>`;
+        friendsBodyContent.innerHTML = `<p style="color: #94a3b8;">Your friends list is active. Use the 'Add Friend' tab to search and connect with other users.</p>`;
     } else if (viewType === 'add') {
         friendsBodyContent.innerHTML = `
             <div class="input-group">
-                <label>Add Friend by Username</label>
+                <label>Add Friend & Create DM Channel</label>
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="friend-search-input" placeholder="Enter username#0000">
-                    <button class="btn-primary" id="send-friend-req-btn" style="width: 140px;">Send Request</button>
+                    <input type="text" id="friend-search-input" placeholder="Enter username">
+                    <button class="btn-primary" id="send-friend-req-btn" style="width: 160px;">Add & Open DM</button>
                 </div>
             </div>
         `;
         document.getElementById('send-friend-req-btn').addEventListener('click', () => {
+            playSound('success');
             const val = document.getElementById('friend-search-input').value.trim();
-            if (val) alert(`Friend request sent to ${val}!`);
+            if (val) {
+                // Dynamically create a custom DM channel for this friend
+                currentChannelId = `dm-${val.toLowerCase()}`;
+                headerChannelName.textContent = val;
+                headerIcon.className = "fa-solid fa-user";
+                
+                const dmList = document.getElementById('dm-list');
+                const dmItem = document.createElement('div');
+                dmItem.className = 'channel-item active';
+                dmItem.setAttribute('data-channel-id', currentChannelId);
+                dmItem.innerHTML = `<i class="fa-solid fa-user"></i> ${val}`;
+                dmList.appendChild(dmItem);
+
+                friendsModal.classList.add('hidden');
+                loadMessages(currentChannelId);
+                alert(`Custom DM channel created with ${val}!`);
+            }
         });
     } else if (viewType === 'blocked') {
         friendsBodyContent.innerHTML = `<p style="color: #94a3b8;">No blocked users.</p>`;
@@ -333,6 +445,7 @@ function renderFriendsView(viewType) {
 
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('tab-btn')) {
+        playSound('click');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         renderFriendsView(e.target.getAttribute('data-view'));
@@ -367,6 +480,7 @@ saveProfileBtn.addEventListener('click', async () => {
     if (!newUsername) return;
 
     try {
+        playSound('click');
         const userDocRef = doc(db, "users", currentUser.uid);
         await updateDoc(userDocRef, { username: newUsername });
 
@@ -375,6 +489,7 @@ saveProfileBtn.addEventListener('click', async () => {
         localStorage.setItem('bettercord_user', JSON.stringify(cachedUser));
 
         myUsernameDisplay.textContent = newUsername;
+        playSound('success');
         alert("Profile updated successfully!");
         settingsModal.classList.add('hidden');
     } catch (err) {
@@ -388,6 +503,7 @@ avatarFileInput.addEventListener('change', (e) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = async function(uploadEvent) {
+            playSound('success');
             const base64Image = uploadEvent.target.result;
             settingsAvatarPreview.src = base64Image;
             myUserAvatar.src = base64Image;
@@ -414,9 +530,11 @@ changePasswordBtn.addEventListener('click', async () => {
     }
 
     try {
+        playSound('click');
         const credential = EmailAuthProvider.credential(currentUser.email, currentPass);
         await reauthenticateWithCredential(currentUser, credential);
         await updatePassword(currentUser, newPass);
+        playSound('success');
         alert("Password updated successfully!");
         currentPasswordInput.value = '';
         newPasswordInput.value = '';
@@ -426,14 +544,22 @@ changePasswordBtn.addEventListener('click', async () => {
 });
 
 // Settings & Modals
-openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+openSettingsBtn.addEventListener('click', () => {
+    playSound('click');
+    settingsModal.classList.remove('hidden');
+});
+closeSettingsBtn.addEventListener('click', () => {
+    playSound('click');
+    settingsModal.classList.add('hidden');
+});
 logoutMenuBtn.addEventListener('click', async () => {
+    playSound('click');
     await signOut(auth);
 });
 
-// Voice / Video Call WebRTC
+// Voice / Video Call WebRTC with Call Sound Effect
 startCallBtn.addEventListener('click', async () => {
+    playSound('call');
     callModal.classList.remove('hidden');
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -445,6 +571,7 @@ startCallBtn.addEventListener('click', async () => {
 });
 
 endCallBtn.addEventListener('click', () => {
+    playSound('click');
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
@@ -454,6 +581,7 @@ endCallBtn.addEventListener('click', () => {
 
 let micMuted = false;
 toggleMicBtn.addEventListener('click', () => {
+    playSound('click');
     if (localStream) {
         micMuted = !micMuted;
         localStream.getAudioTracks()[0].enabled = !micMuted;
@@ -463,6 +591,7 @@ toggleMicBtn.addEventListener('click', () => {
 
 let camOff = false;
 toggleCamBtn.addEventListener('click', () => {
+    playSound('click');
     if (localStream) {
         camOff = !camOff;
         localStream.getVideoTracks()[0].enabled = !camOff;

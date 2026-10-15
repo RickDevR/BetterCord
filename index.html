@@ -49,7 +49,7 @@
     <div id="app-container" class="app-container hidden">
         <!-- ACCOUNTS & SERVERS SIDEBAR -->
         <nav class="servers-sidebar glass-panel">
-            <div class="server-icon home-icon active" title="Direct Messages">
+            <div class="server-icon home-icon active" id="home-nav-btn" title="Direct Messages & Friends">
                 <i class="fa-solid fa-comments"></i>
             </div>
             <div class="server-divider"></div>
@@ -77,13 +77,13 @@
             <div class="channels-list">
                 <div class="channel-category">DIRECT MESSAGES</div>
                 <div id="dm-list" class="channel-items">
-                    <div class="channel-item" data-tab="friends">
+                    <div class="channel-item active" data-tab="friends" id="friends-tab-btn">
                         <i class="fa-solid fa-user-group"></i> Friends & Requests
                     </div>
                 </div>
                 <div class="channel-category channel-spacer">TEXT CHANNELS</div>
                 <div id="text-channels-list" class="channel-items">
-                    <div class="channel-item active" data-channel-id="general">
+                    <div class="channel-item" data-channel-id="general">
                         <i class="fa-solid fa-hashtag"></i> general
                     </div>
                     <div class="channel-item" data-channel-id="announcements">
@@ -131,7 +131,7 @@
 
             <div class="chat-input-wrapper">
                 <div class="chat-input-box">
-                    <button class="upload-btn" id="upload-media-btn"><i class="fa-solid fa-plus"></i></button>
+                    <button class="upload-btn" id="upload-media-btn" title="Upload Attachment"><i class="fa-solid fa-plus"></i></button>
                     <input type="text" id="chat-input" placeholder="Message #general">
                     <button id="send-msg-btn"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
@@ -145,7 +145,7 @@
         </aside>
     </div>
 
-    <!-- FRIENDS & REQUESTS MODAL -->
+    <!-- FRIENDS MODAL -->
     <div id="friends-modal" class="modal hidden">
         <div class="modal-content glass-modal friends-layout animate-pop">
             <div class="friends-header">

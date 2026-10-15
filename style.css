@@ -38,6 +38,21 @@ body {
 
 .hidden { display: none !important; }
 
+/* Responsive Device Adaptation */
+@media (max-width: 768px) {
+    .servers-sidebar { width: 64px; }
+    .channels-sidebar { width: 200px; }
+    .members-sidebar { display: none; }
+    .settings-layout { width: 95vw; height: 90vh; flex-direction: column; }
+    .settings-sidebar { width: 100%; padding: 20px; }
+    .video-grid-container { width: 95vw; height: 80vh; }
+}
+
+@media (max-width: 480px) {
+    .channels-sidebar { display: none; }
+    .servers-sidebar { width: 56px; }
+}
+
 /* AUTH OVERLAY */
 .auth-overlay {
     position: fixed;
@@ -64,7 +79,6 @@ body {
     font-weight: 700;
     margin-bottom: 6px;
     background: linear-gradient(135deg, #fff 0%, #b8c1ec 100%);
-    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
