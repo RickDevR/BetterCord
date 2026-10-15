@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetterCord</title>
+    <link rel="icon" id="favicon" href="icon.png" onerror="this.href='icon.jpg'; this.onerror=function(){this.href='';};">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- AUTHENTICATION OVERLAY -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-card glass-panel">
+            <div class="auth-header">
+                <h2>BetterCord</h2>
+                <p id="auth-subtitle">Welcome back! Please enter your details.</p>
+            </div>
+            
+            <div id="auth-error" class="auth-error hidden"></div>
+
+            <form id="auth-form">
+                <div id="email-group" class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="auth-email" required placeholder="name@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="auth-username" required placeholder="CoolGamer99">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="btn-primary">Log In</button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="auth-switch-text">Need an account?</span>
+                <a href="#" id="auth-switch-btn">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-container" class="app-container hidden">
+        <!-- SERVERS SIDEBAR -->
+        <nav class="servers-sidebar glass-panel">
+            <div class="server-icon home-icon active" title="Direct Messages">
+                <i class="fa-solid fa-comments"></i>
+            </div>
+            <div class="server-divider"></div>
+            <div id="server-list" class="server-list">
+                <div class="server-icon" data-server-id="general" title="General Server">
+                    <span>GC</span>
+                </div>
+            </div>
+            <div class="server-icon add-server-btn" id="add-server-btn" title="Add a Server">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </nav>
+
+        <!-- CHANNELS SIDEBAR -->
+        <aside class="channels-sidebar glass-panel">
+            <div class="server-header">
+                <h3 id="current-server-name">Direct Messages</h3>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="channels-list">
+                <div class="channel-category">DIRECT MESSAGES</div>
+                <div id="dm-list" class="channel-items"></div>
+                <div class="channel-category channel-spacer">TEXT CHANNELS</div>
+                <div id="text-channels-list" class="channel-items">
+                    <div class="channel-item active" data-channel-id="general">
+                        <i class="fa-solid fa-hashtag"></i> general
+                    </div>
+                    <div class="channel-item" data-channel-id="announcements">
+                        <i class="fa-solid fa-hashtag"></i> announcements
+                    </div>
+                </div>
+                <div class="channel-category channel-spacer">VOICE CHANNELS</div>
+                <div id="voice-channels-list" class="channel-items">
+                    <div class="channel-item voice-channel-btn" data-channel-id="general-voice">
+                        <i class="fa-solid fa-volume-high"></i> General Voice
+                    </div>
+                </div>
+            </div>
+
+            <!-- USER BAR FOOTER -->
+            <div class="user-bar">
+                <div class="user-avatar-container" id="user-profile-trigger">
+                    <img id="my-user-avatar" src="" alt="Avatar" class="user-avatar-img">
+                    <div class="status-indicator"></div>
+                </div>
+                <div class="user-info">
+                    <span id="my-username-display" class="username">Loading...</span>
+                    <span id="my-status-display" class="user-tag">Online</span>
+                </div>
+                <div class="user-actions">
+                    <button id="open-settings-btn" title="User Settings"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CHAT AREA -->
+        <main class="chat-area glass-panel">
+            <header class="chat-header">
+                <div class="chat-title">
+                    <i class="fa-solid fa-hashtag" id="header-icon"></i>
+                    <span id="header-channel-name">general</span>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="start-call-btn" title="Start Video/Voice Call"><i class="fa-solid fa-video"></i></button>
+                    <button id="toggle-members-btn" title="Member List"><i class="fa-solid fa-users"></i></button>
+                </div>
+            </header>
+
+            <div id="messages-container" class="messages-container"></div>
+
+            <div class="chat-input-wrapper">
+                <div class="chat-input-box">
+                    <button class="upload-btn"><i class="fa-solid fa-plus"></i></button>
+                    <input type="text" id="chat-input" placeholder="Message #general">
+                    <button id="send-msg-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+
+        <!-- MEMBERS SIDEBAR -->
+        <aside class="members-sidebar glass-panel" id="members-sidebar">
+            <div class="members-category">ONLINE — <span id="online-count">1</span></div>
+            <div id="members-list" class="members-list"></div>
+        </aside>
+    </div>
+
+    <!-- VOICE / VIDEO CALL MODAL -->
+    <div id="call-modal" class="modal hidden">
+        <div class="modal-content glass-modal video-grid-container">
+            <div class="video-grid">
+                <div class="video-box">
+                    <video id="local-video" autoplay muted playsinline></video>
+                    <span class="video-username" id="local-video-name">You</span>
+                </div>
+                <div class="video-box">
+                    <video id="remote-video" autoplay playsinline></video>
+                    <span class="video-username">Remote User</span>
+                </div>
+            </div>
+            <div class="call-controls">
+                <button id="toggle-mic-btn" class="call-btn"><i class="fa-solid fa-microphone"></i></button>
+                <button id="toggle-cam-btn" class="call-btn"><i class="fa-solid fa-video"></i></button>
+                <button id="end-call-btn" class="call-btn red"><i class="fa-solid fa-phone-slash"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content glass-modal settings-layout">
+            <div class="settings-sidebar">
+                <h3>User Settings</h3>
+                <ul>
+                    <li class="active" data-tab="profile">My Account</li>
+                    <li data-tab="security">Password & Security</li>
+                    <li id="logout-menu-btn" class="danger">Log Out</li>
+                </ul>
+            </div>
+            <div class="settings-body">
+                <div id="tab-profile" class="settings-tab">
+                    <h2>My Account</h2>
+                    <div class="avatar-upload-section">
+                        <img id="settings-avatar-preview" src="" class="settings-avatar-img">
+                        <label for="avatar-file-input" class="btn-secondary">Change Avatar</label>
+                        <input type="file" id="avatar-file-input" accept="image/*" class="hidden">
+                    </div>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="settings-username-input">
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="settings-email-input" disabled>
+                    </div>
+                    <button id="save-profile-btn" class="btn-primary">Save Changes</button>
+                </div>
+
+                <div id="tab-security" class="settings-tab hidden">
+                    <h2>Password & Security</h2>
+                    <div class="input-group">
+                        <label>Recent / Current Password</label>
+                        <input type="password" id="current-password-input" placeholder="Enter current password">
+                    </div>
+                    <div class="input-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-password-input" placeholder="Enter new password">
+                    </div>
+                    <button id="change-password-btn" class="btn-primary">Update Password</button>
+                </div>
+            </div>
+            <button class="close-modal-btn" id="close-settings-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
