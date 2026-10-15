@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetterCord</title>
+    <title>BetterCord - Elite Experience</title>
     <link rel="icon" id="favicon" href="icon.png" onerror="this.href='icon.jpg'; this.onerror=function(){this.href='';};">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,7 +11,7 @@
 <body>
     <!-- AUTHENTICATION OVERLAY -->
     <div id="auth-overlay" class="auth-overlay">
-        <div class="auth-card glass-panel">
+        <div class="auth-card glass-panel animate-pop">
             <div class="auth-header">
                 <h2>BetterCord</h2>
                 <p id="auth-subtitle">Welcome back! Please enter your details.</p>
@@ -30,9 +30,12 @@
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••">
+                    <div class="password-wrapper">
+                        <input type="password" id="auth-password" required placeholder="••••••••">
+                        <i class="fa-solid fa-eye password-toggle" id="toggle-password-btn"></i>
+                    </div>
                 </div>
-                <button type="submit" id="auth-submit-btn" class="btn-primary">Log In</button>
+                <button type="submit" id="auth-submit-btn" class="btn-primary animate-btn">Log In</button>
             </form>
 
             <div class="auth-switch">
@@ -44,7 +47,7 @@
 
     <!-- MAIN APP CONTAINER -->
     <div id="app-container" class="app-container hidden">
-        <!-- SERVERS SIDEBAR -->
+        <!-- ACCOUNTS & SERVERS SIDEBAR -->
         <nav class="servers-sidebar glass-panel">
             <div class="server-icon home-icon active" title="Direct Messages">
                 <i class="fa-solid fa-comments"></i>
@@ -58,17 +61,26 @@
             <div class="server-icon add-server-btn" id="add-server-btn" title="Add a Server">
                 <i class="fa-solid fa-plus"></i>
             </div>
+            <div class="server-divider"></div>
+            <div id="multi-accounts-list" class="multi-accounts-list" title="Switch Account"></div>
+            <div class="server-icon add-account-btn" id="add-account-btn" title="Add / Switch Account">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
         </nav>
 
         <!-- CHANNELS SIDEBAR -->
         <aside class="channels-sidebar glass-panel">
-            <div class="server-header">
+            <div class="server-header" id="server-header-dropdown">
                 <h3 id="current-server-name">Direct Messages</h3>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
             <div class="channels-list">
                 <div class="channel-category">DIRECT MESSAGES</div>
-                <div id="dm-list" class="channel-items"></div>
+                <div id="dm-list" class="channel-items">
+                    <div class="channel-item" data-tab="friends">
+                        <i class="fa-solid fa-user-group"></i> Friends & Requests
+                    </div>
+                </div>
                 <div class="channel-category channel-spacer">TEXT CHANNELS</div>
                 <div id="text-channels-list" class="channel-items">
                     <div class="channel-item active" data-channel-id="general">
@@ -119,7 +131,7 @@
 
             <div class="chat-input-wrapper">
                 <div class="chat-input-box">
-                    <button class="upload-btn"><i class="fa-solid fa-plus"></i></button>
+                    <button class="upload-btn" id="upload-media-btn"><i class="fa-solid fa-plus"></i></button>
                     <input type="text" id="chat-input" placeholder="Message #general">
                     <button id="send-msg-btn"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
@@ -133,9 +145,25 @@
         </aside>
     </div>
 
+    <!-- FRIENDS & REQUESTS MODAL -->
+    <div id="friends-modal" class="modal hidden">
+        <div class="modal-content glass-modal friends-layout animate-pop">
+            <div class="friends-header">
+                <h2><i class="fa-solid fa-user-group"></i> Friends & Requests</h2>
+                <div class="friend-tabs">
+                    <button class="tab-btn active" data-view="all">All Friends</button>
+                    <button class="tab-btn" data-view="add">Add Friend</button>
+                    <button class="tab-btn" data-view="blocked">Blocked Users</button>
+                </div>
+            </div>
+            <div class="friends-body" id="friends-body-content"></div>
+            <button class="close-modal-btn" id="close-friends-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
     <!-- VOICE / VIDEO CALL MODAL -->
     <div id="call-modal" class="modal hidden">
-        <div class="modal-content glass-modal video-grid-container">
+        <div class="modal-content glass-modal video-grid-container animate-pop">
             <div class="video-grid">
                 <div class="video-box">
                     <video id="local-video" autoplay muted playsinline></video>
@@ -156,7 +184,7 @@
 
     <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="modal hidden">
-        <div class="modal-content glass-modal settings-layout">
+        <div class="modal-content glass-modal settings-layout animate-pop">
             <div class="settings-sidebar">
                 <h3>User Settings</h3>
                 <ul>
