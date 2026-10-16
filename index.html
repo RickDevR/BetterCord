@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Cloud Dashboard</title>
+    <!-- Tailwind CSS for modern sleek UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8); }
+        }
+        .glow-card {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <!-- TOP NAVIGATION / HEADER -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30">
+                E
+            </div>
+            <span class="font-semibold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Enterprise Nexus</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> System Operational
+            </span>
+            <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-medium text-slate-300">
+                AD
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD CONTENT (FAKE LOGIN / SLEEK UI) -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <!-- Left Column: Metrics -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm glow-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold tracking-tight">Real-Time Infrastructure Load</h2>
+                    <span class="text-xs text-blue-400 font-mono">LIVE_STREAM_v4.2</span>
+                </div>
+                <div class="h-48 flex items-end gap-2 pt-6">
+                    <!-- Simulated live animated bars -->
+                    <div class="flex-1 bg-blue-600/20 hover:bg-blue-500 rounded-t transition-all duration-500 h-[45%]"></div>
+                    <div class="flex-1 bg-blue-600/30 hover:bg-blue-500 rounded-t transition-all duration-500 h-[65%]"></div>
+                    <div class="flex-1 bg-blue-600/50 hover:bg-blue-500 rounded-t transition-all duration-500 h-[30%]"></div>
+                    <div class="flex-1 bg-blue-600/40 hover:bg-blue-500 rounded-t transition-all duration-500 h-[80%]"></div>
+                    <div class="flex-1 bg-blue-600/60 hover:bg-blue-500 rounded-t transition-all duration-500 h-[55%]"></div>
+                    <div class="flex-1 bg-blue-600/30 hover:bg-blue-500 rounded-t transition-all duration-500 h-[90%]"></div>
+                    <div class="flex-1 bg-blue-600/70 hover:bg-blue-500 rounded-t transition-all duration-500 h-[70%]"></div>
+                    <div class="flex-1 bg-blue-600/40 hover:bg-blue-500 rounded-t transition-all duration-500 h-[50%]"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Active Secure Nodes</p>
+                    <p class="text-2xl font-bold mt-2 font-mono">1,428</p>
+                    <span class="text-xs text-emerald-400 mt-1 inline-block">+12.4% from last hour</span>
+                </div>
+                <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Network Latency</p>
+                    <p class="text-2xl font-bold mt-2 font-mono">14.2 ms</p>
+                    <span class="text-xs text-emerald-400 mt-1 inline-block">Optimal Performance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Quick Terminal / Fake Auth card -->
+        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm space-y-4">
+            <h3 class="font-semibold text-slate-200">Terminal Log</h3>
+            <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs text-slate-400 h-64 overflow-y-auto space-y-2 border border-slate-900">
+                <p class="text-emerald-400">[00:00:01] System boot sequence verified.</p>
+                <p>[00:00:03] Secure enclave initialized successfully.</p>
+                <p>[00:00:05] Establishing encrypted socket connection...</p>
+                <p class="text-blue-400">[00:00:07] Connected to Firestore cluster us-central1.</p>
+                <p class="text-slate-500">[Hint: Press F2 to open broadcast controls]</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- SECRET F2 CONTROL PANEL (HIDDEN BY DEFAULT) -->
+    <div id="f2-panel" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative space-y-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Broadcasting Panel</h2>
+                    <p class="text-xs text-slate-400">Manage live audio stream via Firestore</p>
+                </div>
+                <button id="close-panel" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-sm">✕</button>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                <div>
+                    <p class="font-medium text-sm text-slate-200">Microphone Broadcast</p>
+                    <p id="mic-status-text" class="text-xs text-slate-400 mt-0.5">Currently Offline</p>
+                </div>
+                <!-- Sleek Animated Toggle Switch -->
+                <button id="mic-toggle-btn" class="w-14 h-8 rounded-full bg-slate-800 p-1 transition-colors duration-300 relative focus:outline-none">
+                    <div id="mic-toggle-thumb" class="w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 translate-x-0"></div>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-500 text-center">
+                Press <kbd class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700 font-mono">F2</kbd> anytime to toggle this menu.
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 py-4 px-6 text-center text-xs text-slate-500">
+        &copy; 2026 Enterprise Nexus Inc. All rights reserved. Secure Cloud Environment.
+    </footer>
+
+    <!-- FIREBASE & STREAMING SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB5aAwZNWcJEbVBUXu3S_Q68drt1mZ20bE",
+            authDomain: "bettercord-52166.firebaseapp.com",
+            projectId: "bettercord-52166",
+            storageBucket: "bettercord-52166.firebasestorage.app",
+            messagingSenderId: "31822010107",
+            appId: "1:31822010107:web:fb7a95036abe214e0d425e",
+            measurementId: "G-83JVF5WXP4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // UI Elements
+        const f2Panel = document.getElementById('f2-panel');
+        const closePanelBtn = document.getElementById('close-panel');
+        const micToggleBtn = document.getElementById('mic-toggle-btn');
+        const micToggleThumb = document.getElementById('mic-toggle-thumb');
+        const micStatusText = document.getElementById('mic-status-text');
+
+        // Toggle F2 Panel visibility
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F2') {
+                e.preventDefault();
+                f2Panel.classList.toggle('hidden');
+            }
+        });
+
+        closePanelBtn.addEventListener('click', () => {
+            f2Panel.classList.add('hidden');
+        });
+
+        // Audio Broadcasting States
+        let isBroadcasting = false;
+        let mediaRecorder = null;
+        let audioStream = null;
+
+        micToggleBtn.addEventListener('click', async () => {
+            if (!isBroadcasting) {
+                try {
+                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+
+                    mediaRecorder.ondataavailable = async (event) => {
+                        if (event.data.size > 0 && isBroadcasting) {
+                            const reader = new FileReader();
+                            reader.readAsDataURL(event.data);
+                            reader.onloadend = async () => {
+                                const base64Audio = reader.result;
+                                try {
+                                    await addDoc(collection(db, "live_audio_stream"), {
+                                        audioData: base64Audio,
+                                        timestamp: serverTimestamp()
+                                    });
+                                } catch (err) {
+                                    console.error("Error pushing audio chunk:", err);
+                                }
+                            };
+                        }
+                    };
+
+                    mediaRecorder.start(1000); // Send chunks every 1 second
+                    isBroadcasting = true;
+
+                    // Update UI Switch to ON
+                    micToggleBtn.classList.remove('bg-slate-800');
+                    micToggleBtn.classList.add('bg-blue-600');
+                    micToggleThumb.classList.add('translate-x-6');
+                    micStatusText.textContent = "Broadcasting Live...";
+                    micStatusText.className = "text-xs text-blue-400 mt-0.5 font-medium";
+
+                } catch (err) {
+                    alert("Microphone access denied or unavailable.");
+                    console.error(err);
+                }
+            } else {
+                stopBroadcast();
+            }
+        });
+
+        function stopBroadcast() {
+            isBroadcasting = false;
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Update UI Switch to OFF
+            micToggleBtn.classList.remove('bg-blue-600');
+            micToggleBtn.classList.add('bg-slate-800');
+            micToggleThumb.classList.remove('translate-x-6');
+            micStatusText.textContent = "Currently Offline";
+            micStatusText.className = "text-xs text-slate-400 mt-0.5";
+        }
+
+        // RECEIVER LISTENER (Anyone on the website can hear live view)
+        const audioQueue = [];
+        let isPlaying = false;
+
+        function playNextInQueue() {
+            if (audioQueue.length === 0) {
+                isPlaying = false;
+                return;
+            }
+            isPlaying = true;
+            const base64Audio = audioQueue.shift();
+            const audio = new Audio(base64Audio);
+            audio.play().catch(e => console.log("Playback error:", e));
+            audio.onended = () => {
+                playNextInQueue();
+            };
+        }
+
+        // Listen for new audio chunks added to Firestore in real-time
+        onSnapshot(collection(db, "live_audio_stream"), (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const data = change.doc.data();
+                    // Avoid playing very old backlog chunks on load (> 5 seconds old)
+                    if (data.timestamp && (Date.now() - data.timestamp.toMillis() < 5000)) {
+                        audioQueue.push(data.audioData);
+                        if (!isPlaying) {
+                            playNextInQueue();
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
